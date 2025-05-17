@@ -1,0 +1,41 @@
+name: MERN CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 📦 Install backend dependencies
+        working-directory: ./server
+        run: npm install
+
+      - name: 📦 Install frontend dependencies
+        working-directory: ./client
+        run: npm install
+
+      - name: 🛠 Build frontend
+        working-directory: ./client
+        run: npm run build
+
+      - name: ✅ Run backend lint/test (optional)
+        working-directory: ./server
+        run: |
+          echo "You can add tests here like: npm test"
